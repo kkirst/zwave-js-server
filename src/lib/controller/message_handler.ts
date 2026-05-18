@@ -723,6 +723,103 @@ export class ControllerMessageHandler implements MessageHandler {
         );
         return { regions: regions ?? undefined };
       }
+
+      // ──────────────────────────────────────────────────────────
+      // Bridge controller / virtual end-node hosting (kkirst fork)
+      // ──────────────────────────────────────────────────────────
+
+      case ControllerCommand.beginAddingVirtualNode: {
+        const ctrlAny = this.driver.controller as any;
+        if (typeof ctrlAny.beginAddingVirtualNode !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        const cb = await ctrlAny.beginAddingVirtualNode(message.profile);
+        return {
+          newNodeId: cb.newNodeId,
+          originalNodeId: cb.originalNodeId,
+        };
+      }
+
+      case ControllerCommand.stopAddingVirtualNode: {
+        const ctrlAny = this.driver.controller as any;
+        if (typeof ctrlAny.stopAddingVirtualNode !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        const success = await ctrlAny.stopAddingVirtualNode();
+        return { success };
+      }
+
+      case ControllerCommand.setVirtualNodeNif: {
+        const ctrlAny = this.driver.controller as any;
+        if (typeof ctrlAny.setVirtualNodeNIF !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        await ctrlAny.setVirtualNodeNIF(message.nodeId, message.profile);
+        return {};
+      }
+
+      case ControllerCommand.notifyPrimaryOfProxyInclusion: {
+        const ctrlAny = this.driver.controller as any;
+        if (typeof ctrlAny.notifyPrimaryOfProxyInclusion !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        await ctrlAny.notifyPrimaryOfProxyInclusion(
+          message.newNodeId,
+          message.primaryNodeId ?? 1,
+        );
+        return {};
+      }
+
+      case ControllerCommand.advertiseVirtualNode: {
+        const ctrlAny = this.driver.controller as any;
+        if (typeof ctrlAny.advertiseVirtualNode !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        const cb = await ctrlAny.advertiseVirtualNode(
+          message.srcNodeId,
+          message.destNodeId,
+        );
+        return { txStatus: cb.txStatus };
+      }
+
+      case ControllerCommand.sendCommandFromVirtualNode: {
+        const ctrlAny = this.driver.controller as any;
+        if (typeof ctrlAny.sendCommandFromVirtualNode !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        let cc: any;
+        if (message.cc.kind === "no_operation") {
+          // Late-resolve to avoid a hard dependency on a specific @zwave-js/cc
+          // export path — the constructor signature is stable across versions.
+          const ccMod: any = await import("@zwave-js/cc/NoOperationCC");
+          cc = new ccMod.NoOperationCC({
+            nodeId: message.destNodeId,
+            endpointIndex: 0,
+          });
+        } else {
+          throw new InvalidParamsPassedToCommandError(
+            `unsupported cc.kind for ${command}`,
+          );
+        }
+        await ctrlAny.sendCommandFromVirtualNode(message.srcNodeId, cc);
+        return {};
+      }
+
+      case ControllerCommand.getVirtualHostedNodes: {
+        const drv = this.driver as any;
+        const map: Map<number, any> | undefined = drv.virtualNodes;
+        const nodes: Array<{
+          nodeId: number;
+          profile: "dimmer" | "binary";
+        }> = [];
+        if (map) {
+          for (const [nodeId, vn] of map.entries()) {
+            nodes.push({ nodeId, profile: vn.profile });
+          }
+        }
+        return { nodes };
+      }
+
       default: {
         throw new UnknownCommandError(command);
       }

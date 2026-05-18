@@ -647,4 +647,57 @@ export type IncomingMessageController =
   | IncomingCommandControllerGetCustomSUCReturnRoutesCached
   | IncomingCommandControllerGetAllAssociationGroups
   | IncomingCommandControllerGetAllAssociations
-  | IncomingCommandControllerGetSupportedRFRegions;
+  | IncomingCommandControllerGetSupportedRFRegions
+  // Bridge controller / virtual end-node hosting (Phase 7)
+  | IncomingCommandControllerBeginAddingVirtualNode
+  | IncomingCommandControllerStopAddingVirtualNode
+  | IncomingCommandControllerSetVirtualNodeNif
+  | IncomingCommandControllerNotifyPrimaryOfProxyInclusion
+  | IncomingCommandControllerAdvertiseVirtualNode
+  | IncomingCommandControllerSendCommandFromVirtualNode
+  | IncomingCommandControllerGetVirtualHostedNodes;
+
+// Bridge controller — virtual end-node hosting (kkirst fork)
+export interface IncomingCommandControllerBeginAddingVirtualNode extends IncomingCommandControllerBase {
+  command: ControllerCommand.beginAddingVirtualNode;
+  profile: "dimmer" | "binary";
+}
+
+export interface IncomingCommandControllerStopAddingVirtualNode extends IncomingCommandControllerBase {
+  command: ControllerCommand.stopAddingVirtualNode;
+}
+
+export interface IncomingCommandControllerSetVirtualNodeNif extends IncomingCommandControllerBase {
+  command: ControllerCommand.setVirtualNodeNif;
+  nodeId: number;
+  profile: "dimmer" | "binary";
+}
+
+export interface IncomingCommandControllerNotifyPrimaryOfProxyInclusion extends IncomingCommandControllerBase {
+  command: ControllerCommand.notifyPrimaryOfProxyInclusion;
+  newNodeId: number;
+  primaryNodeId?: number;
+}
+
+export interface IncomingCommandControllerAdvertiseVirtualNode extends IncomingCommandControllerBase {
+  command: ControllerCommand.advertiseVirtualNode;
+  srcNodeId: number;
+  destNodeId: number;
+}
+
+export interface IncomingCommandControllerSendCommandFromVirtualNode extends IncomingCommandControllerBase {
+  command: ControllerCommand.sendCommandFromVirtualNode;
+  srcNodeId: number;
+  destNodeId: number;
+  /**
+   * Limited shape for Phase 7 MVP: caller specifies a high-level CC kind
+   * and the server constructs the matching CommandClass. Currently only
+   * "no_operation" is supported. Future: extend to e.g.
+   * "multilevel_switch_report" with {currentValue, targetValue, duration}.
+   */
+  cc: { kind: "no_operation" };
+}
+
+export interface IncomingCommandControllerGetVirtualHostedNodes extends IncomingCommandControllerBase {
+  command: ControllerCommand.getVirtualHostedNodes;
+}

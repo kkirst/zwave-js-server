@@ -119,4 +119,12 @@ export enum ControllerCommand {
   getAllAssociations = "controller.get_all_associations",
   // RF region info
   getSupportedRFRegions = "controller.get_supported_rf_regions",
+  // Bridge controller / virtual end-node hosting (kkirst fork — Phase 7)
+  beginAddingVirtualNode = "controller.begin_adding_virtual_node",
+  stopAddingVirtualNode = "controller.stop_adding_virtual_node",
+  setVirtualNodeNif = "controller.set_virtual_node_nif",
+  notifyPrimaryOfProxyInclusion = "controller.notify_primary_of_proxy_inclusion",
+  advertiseVirtualNode = "controller.advertise_virtual_node",
+  sendCommandFromVirtualNode = "controller.send_command_from_virtual_node",
+  getVirtualHostedNodes = "controller.get_virtual_hosted_nodes",
 }

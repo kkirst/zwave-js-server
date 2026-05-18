@@ -198,4 +198,17 @@ export interface ControllerResultTypes {
   [ControllerCommand.getSupportedRFRegions]: {
     regions: readonly RFRegion[] | undefined;
   };
+  // Bridge controller / virtual end-node hosting (Phase 7)
+  [ControllerCommand.beginAddingVirtualNode]: {
+    newNodeId: number;
+    originalNodeId: number;
+  };
+  [ControllerCommand.stopAddingVirtualNode]: { success: boolean };
+  [ControllerCommand.setVirtualNodeNif]: {};
+  [ControllerCommand.notifyPrimaryOfProxyInclusion]: {};
+  [ControllerCommand.advertiseVirtualNode]: { txStatus: number };
+  [ControllerCommand.sendCommandFromVirtualNode]: {};
+  [ControllerCommand.getVirtualHostedNodes]: {
+    nodes: Array<{ nodeId: number; profile: "dimmer" | "binary" }>;
+  };
 }
