@@ -788,13 +788,31 @@ export class ControllerMessageHandler implements MessageHandler {
           throw new UnknownCommandError(command);
         }
         let cc: any;
+        // Late-resolve CC module imports — keeps the handler decoupled
+        // from specific @zwave-js/cc export paths.
         if (message.cc.kind === "no_operation") {
-          // Late-resolve to avoid a hard dependency on a specific @zwave-js/cc
-          // export path — the constructor signature is stable across versions.
           const ccMod: any = await import("@zwave-js/cc/NoOperationCC");
           cc = new ccMod.NoOperationCC({
             nodeId: message.destNodeId,
             endpointIndex: 0,
+          });
+        } else if (message.cc.kind === "multilevel_switch_report") {
+          const ccMod: any = await import("@zwave-js/cc/MultilevelSwitchCC");
+          cc = new ccMod.MultilevelSwitchCCReport({
+            nodeId: message.destNodeId,
+            endpointIndex: 0,
+            currentValue: message.cc.currentValue,
+            targetValue: message.cc.targetValue ?? message.cc.currentValue,
+            duration: message.cc.duration ?? 0,
+          });
+        } else if (message.cc.kind === "binary_switch_report") {
+          const ccMod: any = await import("@zwave-js/cc/BinarySwitchCC");
+          cc = new ccMod.BinarySwitchCCReport({
+            nodeId: message.destNodeId,
+            endpointIndex: 0,
+            currentValue: message.cc.currentValue,
+            targetValue: message.cc.targetValue ?? message.cc.currentValue,
+            duration: message.cc.duration ?? 0,
           });
         } else {
           throw new InvalidParamsPassedToCommandError(
@@ -802,6 +820,16 @@ export class ControllerMessageHandler implements MessageHandler {
           );
         }
         await ctrlAny.sendCommandFromVirtualNode(message.srcNodeId, cc);
+        return {};
+      }
+
+      case ControllerCommand.setVirtualNodeValue: {
+        const drvAny = this.driver as any;
+        if (typeof drvAny.setVirtualHostedNodeValue !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        const v = message.value === null ? undefined : message.value;
+        drvAny.setVirtualHostedNodeValue(message.nodeId, v);
         return {};
       }
 

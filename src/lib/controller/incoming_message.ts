@@ -655,7 +655,8 @@ export type IncomingMessageController =
   | IncomingCommandControllerNotifyPrimaryOfProxyInclusion
   | IncomingCommandControllerAdvertiseVirtualNode
   | IncomingCommandControllerSendCommandFromVirtualNode
-  | IncomingCommandControllerGetVirtualHostedNodes;
+  | IncomingCommandControllerGetVirtualHostedNodes
+  | IncomingCommandControllerSetVirtualNodeValue;
 
 // Bridge controller — virtual end-node hosting (kkirst fork)
 export interface IncomingCommandControllerBeginAddingVirtualNode extends IncomingCommandControllerBase {
@@ -690,14 +691,37 @@ export interface IncomingCommandControllerSendCommandFromVirtualNode extends Inc
   srcNodeId: number;
   destNodeId: number;
   /**
-   * Limited shape for Phase 7 MVP: caller specifies a high-level CC kind
-   * and the server constructs the matching CommandClass. Currently only
-   * "no_operation" is supported. Future: extend to e.g.
-   * "multilevel_switch_report" with {currentValue, targetValue, duration}.
+   * Server-side CC builder selector. The server constructs the
+   * appropriate CommandClass from this descriptor — clients never
+   * serialize CC bytes themselves. Add new shapes here as needed.
    */
-  cc: { kind: "no_operation" };
+  cc:
+    | { kind: "no_operation" }
+    | {
+        kind: "multilevel_switch_report";
+        currentValue: number;
+        targetValue?: number;
+        duration?: number;
+      }
+    | {
+        kind: "binary_switch_report";
+        currentValue: boolean;
+        targetValue?: boolean;
+        duration?: number;
+      };
 }
 
 export interface IncomingCommandControllerGetVirtualHostedNodes extends IncomingCommandControllerBase {
   command: ControllerCommand.getVirtualHostedNodes;
+}
+
+export interface IncomingCommandControllerSetVirtualNodeValue extends IncomingCommandControllerBase {
+  command: ControllerCommand.setVirtualNodeValue;
+  nodeId: number;
+  /**
+   * For dimmer profile: number (0..99 = level, 255 = "previous/default").
+   * For binary profile: boolean. Pass null to clear (undefined doesn't
+   * survive JSON round-trip).
+   */
+  value: number | boolean | null;
 }

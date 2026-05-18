@@ -102,6 +102,21 @@ export class EventForwarder {
         { minSchemaVersion: 47 },
       );
     });
+
+    // Bridge controller / virtual end-node hosting (kkirst fork) —
+    // forward virtual node value mutations to WS subscribers. The bridge
+    // daemon subscribes via standard `start_listening` and consumes this
+    // event to translate vnode value changes into Matter commands.
+    (this.clientsController.driver as any).on(
+      "virtual node value updated",
+      (payload: { nodeId: number; previous: any; current: any }) => {
+        this.clientsController.sendEventToListeningClients({
+          source: "driver",
+          event: "virtual node value updated",
+          ...payload,
+        } as any);
+      },
+    );
   }
 
   setupControllerAndNodes() {

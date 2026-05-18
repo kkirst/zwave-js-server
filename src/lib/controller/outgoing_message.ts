@@ -211,4 +211,5 @@ export interface ControllerResultTypes {
   [ControllerCommand.getVirtualHostedNodes]: {
     nodes: Array<{ nodeId: number; profile: "dimmer" | "binary" }>;
   };
+  [ControllerCommand.setVirtualNodeValue]: {};
 }
