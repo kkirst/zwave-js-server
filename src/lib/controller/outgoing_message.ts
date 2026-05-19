@@ -212,4 +212,5 @@ export interface ControllerResultTypes {
     nodes: Array<{ nodeId: number; profile: "dimmer" | "binary" }>;
   };
   [ControllerCommand.setVirtualNodeValue]: {};
+  [ControllerCommand.setVirtualNodeBinaryValue]: {};
 }

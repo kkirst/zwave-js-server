@@ -128,4 +128,5 @@ export enum ControllerCommand {
   sendCommandFromVirtualNode = "controller.send_command_from_virtual_node",
   getVirtualHostedNodes = "controller.get_virtual_hosted_nodes",
   setVirtualNodeValue = "controller.set_virtual_node_value",
+  setVirtualNodeBinaryValue = "controller.set_virtual_node_binary_value",
 }

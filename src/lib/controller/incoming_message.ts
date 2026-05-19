@@ -656,7 +656,8 @@ export type IncomingMessageController =
   | IncomingCommandControllerAdvertiseVirtualNode
   | IncomingCommandControllerSendCommandFromVirtualNode
   | IncomingCommandControllerGetVirtualHostedNodes
-  | IncomingCommandControllerSetVirtualNodeValue;
+  | IncomingCommandControllerSetVirtualNodeValue
+  | IncomingCommandControllerSetVirtualNodeBinaryValue;
 
 // Bridge controller — virtual end-node hosting (kkirst fork)
 export interface IncomingCommandControllerBeginAddingVirtualNode extends IncomingCommandControllerBase {
@@ -740,4 +741,14 @@ export interface IncomingCommandControllerSetVirtualNodeValue extends IncomingCo
    * survive JSON round-trip).
    */
   value: number | boolean | null;
+}
+
+export interface IncomingCommandControllerSetVirtualNodeBinaryValue extends IncomingCommandControllerBase {
+  command: ControllerCommand.setVirtualNodeBinaryValue;
+  nodeId: number;
+  /**
+   * Virtual-relay state — drives the dimmer-profile vnode's BinarySwitch
+   * Set Group (group 3). Pass null to clear.
+   */
+  value: boolean | null;
 }

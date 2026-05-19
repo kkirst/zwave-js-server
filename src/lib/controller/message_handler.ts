@@ -856,6 +856,16 @@ export class ControllerMessageHandler implements MessageHandler {
         return {};
       }
 
+      case ControllerCommand.setVirtualNodeBinaryValue: {
+        const drvAny = this.driver as any;
+        if (typeof drvAny.setVirtualHostedNodeBinaryValue !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        const v = message.value === null ? undefined : message.value;
+        drvAny.setVirtualHostedNodeBinaryValue(message.nodeId, v);
+        return {};
+      }
+
       case ControllerCommand.getVirtualHostedNodes: {
         const drv = this.driver as any;
         const map: Map<number, any> | undefined = drv.virtualNodes;
