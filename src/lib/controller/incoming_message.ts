@@ -708,6 +708,22 @@ export interface IncomingCommandControllerSendCommandFromVirtualNode extends Inc
         currentValue: boolean;
         targetValue?: boolean;
         duration?: number;
+      }
+    | {
+        // Drives a target paddle's dimmer EP value (and thus LED) over
+        // the vnode-to-paddle S2 SPAN. targetValue 0..99. endpoint
+        // defaults to root (0). duration is the paddle's ramp-time hint
+        // in seconds (0 = paddle's configured default).
+        kind: "multilevel_switch_set";
+        targetValue: number;
+        endpoint?: number;
+        duration?: number;
+      }
+    | {
+        kind: "binary_switch_set";
+        targetValue: boolean;
+        endpoint?: number;
+        duration?: number;
       };
 }
 

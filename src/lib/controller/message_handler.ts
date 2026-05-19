@@ -814,6 +814,29 @@ export class ControllerMessageHandler implements MessageHandler {
             targetValue: message.cc.targetValue ?? message.cc.currentValue,
             duration: message.cc.duration ?? 0,
           });
+        } else if (message.cc.kind === "multilevel_switch_set") {
+          // Drive paddle dimmer LED via direct MultilevelSwitch.Set.
+          // Sent FROM the vnode → destination paddle uses the
+          // vnode-to-paddle S2 SPAN (peer-to-peer, stays warm) rather
+          // than the Pi-controller-to-paddle SPAN (chronically desynced
+          // because paddle was included by HA). targetValue is 0–99,
+          // endpoint defaults to root (0); duration is paddle ramp time
+          // (0 = paddle's configured default).
+          const ccMod: any = await import("@zwave-js/cc/MultilevelSwitchCC");
+          cc = new ccMod.MultilevelSwitchCCSet({
+            nodeId: message.destNodeId,
+            endpointIndex: message.cc.endpoint ?? 0,
+            targetValue: message.cc.targetValue,
+            duration: message.cc.duration ?? 0,
+          });
+        } else if (message.cc.kind === "binary_switch_set") {
+          const ccMod: any = await import("@zwave-js/cc/BinarySwitchCC");
+          cc = new ccMod.BinarySwitchCCSet({
+            nodeId: message.destNodeId,
+            endpointIndex: message.cc.endpoint ?? 0,
+            targetValue: message.cc.targetValue,
+            duration: message.cc.duration ?? 0,
+          });
         } else {
           throw new InvalidParamsPassedToCommandError(
             `unsupported cc.kind for ${command}`,
