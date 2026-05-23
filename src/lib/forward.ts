@@ -117,6 +117,23 @@ export class EventForwarder {
         } as any);
       },
     );
+    // Task #48: forward inbound binary-state changes on hosted vnodes.
+    // Fired when VirtualHostedNode.handleCommand processes a
+    // BinarySwitchCC.Report or BasicCC.Set frame addressed to the vnode
+    // (e.g. a paddle telling its associated lifeline target that its
+    // relay just toggled). Lets the bridge daemon learn paddle/relay
+    // physical state directly through the vnode itself instead of via
+    // the indirect `relay_observer` lifeline subscription.
+    (this.clientsController.driver as any).on(
+      "virtual node binary value updated",
+      (payload: { nodeId: number; previous: any; current: any }) => {
+        this.clientsController.sendEventToListeningClients({
+          source: "driver",
+          event: "virtual node binary value updated",
+          ...payload,
+        } as any);
+      },
+    );
   }
 
   setupControllerAndNodes() {
