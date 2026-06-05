@@ -651,6 +651,7 @@ export type IncomingMessageController =
   // Bridge controller / virtual end-node hosting (Phase 7)
   | IncomingCommandControllerBeginAddingVirtualNode
   | IncomingCommandControllerStopAddingVirtualNode
+  | IncomingCommandControllerRemoveVirtualNode
   | IncomingCommandControllerSetVirtualNodeNif
   | IncomingCommandControllerNotifyPrimaryOfProxyInclusion
   | IncomingCommandControllerAdvertiseVirtualNode
@@ -667,6 +668,11 @@ export interface IncomingCommandControllerBeginAddingVirtualNode extends Incomin
 
 export interface IncomingCommandControllerStopAddingVirtualNode extends IncomingCommandControllerBase {
   command: ControllerCommand.stopAddingVirtualNode;
+}
+
+export interface IncomingCommandControllerRemoveVirtualNode extends IncomingCommandControllerBase {
+  command: ControllerCommand.removeVirtualNode;
+  nodeId: number;
 }
 
 export interface IncomingCommandControllerSetVirtualNodeNif extends IncomingCommandControllerBase {

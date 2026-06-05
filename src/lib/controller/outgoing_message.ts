@@ -204,6 +204,7 @@ export interface ControllerResultTypes {
     originalNodeId: number;
   };
   [ControllerCommand.stopAddingVirtualNode]: { success: boolean };
+  [ControllerCommand.removeVirtualNode]: {};
   [ControllerCommand.setVirtualNodeNif]: {};
   [ControllerCommand.notifyPrimaryOfProxyInclusion]: {};
   [ControllerCommand.advertiseVirtualNode]: { txStatus: number };

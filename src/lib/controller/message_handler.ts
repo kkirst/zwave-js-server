@@ -749,6 +749,15 @@ export class ControllerMessageHandler implements MessageHandler {
         return { success };
       }
 
+      case ControllerCommand.removeVirtualNode: {
+        const ctrlAny = this.driver.controller as any;
+        if (typeof ctrlAny.removeVirtualNode !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        await ctrlAny.removeVirtualNode(message.nodeId);
+        return {};
+      }
+
       case ControllerCommand.setVirtualNodeNif: {
         const ctrlAny = this.driver.controller as any;
         if (typeof ctrlAny.setVirtualNodeNIF !== "function") {

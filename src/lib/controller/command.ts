@@ -122,6 +122,7 @@ export enum ControllerCommand {
   // Bridge controller / virtual end-node hosting (kkirst fork — Phase 7)
   beginAddingVirtualNode = "controller.begin_adding_virtual_node",
   stopAddingVirtualNode = "controller.stop_adding_virtual_node",
+  removeVirtualNode = "controller.remove_virtual_node",
   setVirtualNodeNif = "controller.set_virtual_node_nif",
   notifyPrimaryOfProxyInclusion = "controller.notify_primary_of_proxy_inclusion",
   advertiseVirtualNode = "controller.advertise_virtual_node",
