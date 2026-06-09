@@ -247,6 +247,14 @@ export class ControllerMessageHandler implements MessageHandler {
         );
         return { neighbors };
       }
+      case ControllerCommand.requestNetworkUpdate: {
+        const ctrlAny = this.driver.controller as any;
+        if (typeof ctrlAny.requestNetworkUpdate !== "function") {
+          throw new UnknownCommandError(message.command);
+        }
+        const status = await ctrlAny.requestNetworkUpdate();
+        return { status };
+      }
       case ControllerCommand.supportsFeature: {
         const supported = this.driver.controller.supportsFeature(
           message.feature,

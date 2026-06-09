@@ -55,6 +55,7 @@ export interface ControllerResultTypes {
   // Schema version > 2
   [ControllerCommand.removeNodeFromAllAssociations]: Record<string, never>;
   [ControllerCommand.getNodeNeighbors]: { neighbors: readonly number[] };
+  [ControllerCommand.requestNetworkUpdate]: { status: number };
   [ControllerCommand.grantSecurityClasses]: Record<string, never>;
   [ControllerCommand.validateDSKAndEnterPIN]: Record<string, never>;
   [ControllerCommand.provisionSmartStartNode]: Record<string, never>;

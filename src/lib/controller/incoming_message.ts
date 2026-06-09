@@ -174,6 +174,10 @@ export interface IncomingCommandControllerGetNodeNeighbors extends IncomingComma
   nodeId: number;
 }
 
+export interface IncomingCommandControllerRequestNetworkUpdate extends IncomingCommandControllerBase {
+  command: ControllerCommand.requestNetworkUpdate;
+}
+
 export interface IncomingCommandControllerGrantSecurityClasses extends IncomingCommandControllerBase {
   command: ControllerCommand.grantSecurityClasses;
   inclusionGrant: InclusionGrant;
@@ -578,6 +582,7 @@ export type IncomingMessageController =
   | IncomingCommandControllerRemoveAssociations
   | IncomingCommandControllerRemoveNodeFromAllAssociations
   | IncomingCommandControllerGetNodeNeighbors
+  | IncomingCommandControllerRequestNetworkUpdate
   | IncomingCommandControllerGrantSecurityClasses
   | IncomingCommandControllerValidateDSKAndEnterPIN
   | IncomingCommandControllerProvisionSmartStartNode
