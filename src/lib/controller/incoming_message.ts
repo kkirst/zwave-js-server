@@ -663,12 +663,14 @@ export type IncomingMessageController =
   | IncomingCommandControllerSendCommandFromVirtualNode
   | IncomingCommandControllerGetVirtualHostedNodes
   | IncomingCommandControllerSetVirtualNodeValue
-  | IncomingCommandControllerSetVirtualNodeBinaryValue;
+  | IncomingCommandControllerSetVirtualNodeBinaryValue
+  | IncomingCommandControllerSetVirtualNodeConfigValue
+  | IncomingCommandControllerGetVirtualHostedNodeState;
 
 // Bridge controller — virtual end-node hosting (kkirst fork)
 export interface IncomingCommandControllerBeginAddingVirtualNode extends IncomingCommandControllerBase {
   command: ControllerCommand.beginAddingVirtualNode;
-  profile: "dimmer" | "binary";
+  profile: "dimmer" | "binary" | "logic";
 }
 
 export interface IncomingCommandControllerStopAddingVirtualNode extends IncomingCommandControllerBase {
@@ -762,4 +764,18 @@ export interface IncomingCommandControllerSetVirtualNodeBinaryValue extends Inco
    * Set Group (group 3). Pass null to clear.
    */
   value: boolean | null;
+}
+
+export interface IncomingCommandControllerSetVirtualNodeConfigValue extends IncomingCommandControllerBase {
+  command: ControllerCommand.setVirtualNodeConfigValue;
+  nodeId: number;
+  /** Configuration CC parameter number (logic profile: 1..4). */
+  parameter: number;
+  /** New value; clamped to the param's range by the vnode. */
+  value: number;
+}
+
+export interface IncomingCommandControllerGetVirtualHostedNodeState extends IncomingCommandControllerBase {
+  command: ControllerCommand.getVirtualHostedNodeState;
+  nodeId: number;
 }

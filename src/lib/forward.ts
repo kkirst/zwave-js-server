@@ -134,6 +134,31 @@ export class EventForwarder {
         } as any);
       },
     );
+    // Logic-combiner vnodes: forward Configuration CC param changes (from
+    // zwave-js-ui / HA / daemon writes) so the bridge daemon's logic engine
+    // re-reads params live.
+    (this.clientsController.driver as any).on(
+      "virtual node config updated",
+      (payload: { nodeId: number; parameter: number; value: number }) => {
+        this.clientsController.sendEventToListeningClients({
+          source: "driver",
+          event: "virtual node config updated",
+          ...payload,
+        } as any);
+      },
+    );
+    // Forward association-membership changes so the daemon re-reads a logic
+    // vnode's "Logic Inputs" group when a node is added/removed.
+    (this.clientsController.driver as any).on(
+      "virtual node associations updated",
+      (payload: { nodeId: number }) => {
+        this.clientsController.sendEventToListeningClients({
+          source: "driver",
+          event: "virtual node associations updated",
+          ...payload,
+        } as any);
+      },
+    );
   }
 
   setupControllerAndNodes() {

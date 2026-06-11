@@ -130,6 +130,8 @@ export enum ControllerCommand {
   getVirtualHostedNodes = "controller.get_virtual_hosted_nodes",
   setVirtualNodeValue = "controller.set_virtual_node_value",
   setVirtualNodeBinaryValue = "controller.set_virtual_node_binary_value",
+  setVirtualNodeConfigValue = "controller.set_virtual_node_config_value",
+  getVirtualHostedNodeState = "controller.get_virtual_hosted_node_state",
   // Inclusion-controller replication (kkirst fork): pull node adds/removes
   // from the SUC/SIS into this controller's node list.
   requestNetworkUpdate = "controller.request_network_update",

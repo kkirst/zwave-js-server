@@ -211,8 +211,24 @@ export interface ControllerResultTypes {
   [ControllerCommand.advertiseVirtualNode]: { txStatus: number };
   [ControllerCommand.sendCommandFromVirtualNode]: {};
   [ControllerCommand.getVirtualHostedNodes]: {
-    nodes: Array<{ nodeId: number; profile: "dimmer" | "binary" }>;
+    nodes: Array<{ nodeId: number; profile: "dimmer" | "binary" | "logic" }>;
   };
   [ControllerCommand.setVirtualNodeValue]: {};
   [ControllerCommand.setVirtualNodeBinaryValue]: {};
+  [ControllerCommand.setVirtualNodeConfigValue]: { value?: number };
+  [ControllerCommand.getVirtualHostedNodeState]: {
+    state: {
+      id: number;
+      profile: string;
+      config: Record<number, number>;
+      associations: Record<
+        number,
+        Array<{ nodeId: number; endpoint?: number }>
+      >;
+      associationGroups: Record<
+        number,
+        { label: string; maxNodes: number; isLifeline: boolean }
+      >;
+    } | null;
+  };
 }

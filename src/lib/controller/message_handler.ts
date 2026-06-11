@@ -883,12 +883,34 @@ export class ControllerMessageHandler implements MessageHandler {
         return {};
       }
 
+      case ControllerCommand.setVirtualNodeConfigValue: {
+        const drvAny = this.driver as any;
+        if (typeof drvAny.setVirtualHostedNodeConfigValue !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        const value = drvAny.setVirtualHostedNodeConfigValue(
+          message.nodeId,
+          message.parameter,
+          message.value,
+        );
+        return { value };
+      }
+
+      case ControllerCommand.getVirtualHostedNodeState: {
+        const drvAny = this.driver as any;
+        if (typeof drvAny.getVirtualHostedNodeState !== "function") {
+          throw new UnknownCommandError(command);
+        }
+        const state = drvAny.getVirtualHostedNodeState(message.nodeId) ?? null;
+        return { state };
+      }
+
       case ControllerCommand.getVirtualHostedNodes: {
         const drv = this.driver as any;
         const map: Map<number, any> | undefined = drv.virtualNodes;
         const nodes: Array<{
           nodeId: number;
-          profile: "dimmer" | "binary";
+          profile: "dimmer" | "binary" | "logic";
         }> = [];
         if (map) {
           for (const [nodeId, vn] of map.entries()) {
